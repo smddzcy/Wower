@@ -1,24 +1,179 @@
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>Wower</title>
-		<link rel="stylesheet" href="index.css">
-		<script>
-			window.jQuery = window.$ = require('jquery');
-		</script>
-	</head>
-	<body>
-		<div class="container">
-			<header>
-				<h1>Hey, it's Wower!</h1>
-				<h2>Let's wow your files. Choose a file:</h2>
-				<input id="upload-input" type="file" name="uploads[]" multiple="multiple">
-			</header>
-			<section class="main"></section>
-			<footer></footer>
-		</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Wower</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script type="text/javascript">
+    window.jQuery = window.$ = require('jquery');
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <!-- <script type="text/javascript" src="angular.min.js"></script> -->
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+    .row.content {height: 1500px}
 
-		<script type="text/javascript" src="app.js"></script>
-	</body>
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+        margin: -15px;
+      }
+
+      .row.content {height: auto; padding: 15px;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row content">
+    <div class="col-sm-3 sidenav">
+      <h4>Wower</h4>
+      <ul class="nav nav-pills nav-stacked">
+        <li class="log active" onclick="show('log')"><a href="#section1">Logs</a></li>
+        <li class="file" onclick="show('file')"><a href="#section2">Files</a></li>
+        <li class="add" onclick="show('add')"><a href="#section3">Add File</a></li>
+      </ul><br>
+    </div>
+
+    <div class="col-sm-9 log_content" style="display: inline">
+      <h1><small>LOGS</small></h1>
+
+      <hr>
+
+
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>TIME</th>
+            <th>FILE</th>
+            <th>IP ADDRESS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#123123</td>
+            <td>MM DD YYYY</td>
+            <td>File Name</td>
+            <td>1231232131232</td>
+          </tr>
+          <tr>
+            <td>Mary</td>
+            <td>File Name</td>
+            <td>Moe</td>
+            <td>mary@example.com</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="col-sm-9 file_content" style="display: none">
+      <h1><small>FILES</small></h1>
+      <hr>
+
+      <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+              File Name --- </a>
+            </h4>
+          </div>
+          <div id="collapse1" class="panel-collapse collapse in">
+            <div class="panel-body">
+            <p>File Path: asdsadlşsad</p>
+            <p>Last Access: 12312312</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+              Collapsible Group 2</a>
+            </h4>
+          </div>
+          <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+            minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+            commodo consequat.</div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+              Collapsible Group 3</a>
+            </h4>
+          </div>
+          <div id="collapse3" class="panel-collapse collapse">
+            <div class="panel-body">Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+            minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+            commodo consequat.</div>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+    <div class="col-sm-9 add_content" style="display: none">
+      <h1><small>ADD FILE</small></h1>
+      <hr>
+      <label for="upload-input">File input</label>
+      <input id="upload-input" type="file" name="uploads[]" multiple="multiple">
+      <br>
+
+      <hr>
+    </div>
+
+  </div>
+</div>
+
+<footer class="container-fluid">
+  <p>Footer Text</p>
+</footer>
+<script type="text/javascript">
+  function reset(){
+    $(".log").removeClass("active");
+    $(".file").removeClass("active");
+    $(".add").removeClass("active");
+
+    $(".log_content").css("display", "none");
+    $(".file_content").css("display", "none");
+    $(".add_content").css("display", "none");
+
+  }
+  function show(s){
+    reset();
+    $("."+s).addClass("active");
+    $("."+s+"_content").css("display", "inline");
+
+  }
+</script>
+<script type="text/javascript" src="app.js"></script>
+
+</body>
 </html>

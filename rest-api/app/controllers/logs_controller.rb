@@ -15,7 +15,9 @@ class LogsController < ApplicationController
 
   # POST /logs
   def create
-    @log = Log.new(log_params)
+    @log = Log.new(ip_address: log_params[:ip_address],
+                   machine_info: log_params[:machine_info],
+                   time: Time.now)
 
     if @log.save
       render json: @log, status: :created, location: @log
@@ -39,13 +41,14 @@ class LogsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_log
-      @log = Log.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def log_params
-      params.require(:log).permit(:ip_address, :machine_info, :time)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_log
+    @log = Log.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def log_params
+    params.require(:log)
+  end
 end
