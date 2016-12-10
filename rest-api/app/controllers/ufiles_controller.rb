@@ -46,6 +46,6 @@ class UfilesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def ufile_params
-      params.require(:ufile).permit(:name, :path)
+      params.require(:ufile).permit(:name, :path, :data)
     end
 end
