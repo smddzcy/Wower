@@ -1,6 +1,6 @@
 # wower
 
-> My rad app
+> Wower
 
 
 ## Dev

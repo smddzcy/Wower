@@ -1,6 +1,6 @@
 'use strict';
 const electron = require('electron');
-
+const logController = require('controllers/logController');
 const app = electron.app;
 
 // adds debug features like hotkeys for triggering dev tools and reload
@@ -17,8 +17,8 @@ function onClosed() {
 
 function createMainWindow() {
 	const win = new electron.BrowserWindow({
-		width: 600,
-		height: 400
+		width: 800,
+		height: 600
 	});
 
 	win.loadURL(`file://${__dirname}/index.html`);
