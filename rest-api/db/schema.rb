@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161210160358) do
+ActiveRecord::Schema.define(version: 20161210171657) do
 
   create_table "logs", force: :cascade do |t|
     t.string   "ip_address"
@@ -18,6 +18,14 @@ ActiveRecord::Schema.define(version: 20161210160358) do
     t.time     "time"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.index [nil], name: "index_logs_on_ufile_id"
+  end
+
+  create_table "ufiles", force: :cascade do |t|
+    t.string   "name"
+    t.string   "path"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

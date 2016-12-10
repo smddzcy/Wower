@@ -11,11 +11,16 @@ $('#upload-input').on('change', function() {
 				return console.log(err);
 			}
 
-      const encryptedData = Crypto.encrypt(data);
-      console.log(encryptedData);
-      system.exec("echo abc")
-        .then((out) => { console.log(out); })
-        .catch((err) => { console.log("Err:" + err); })
+			const encryptedData = Crypto.encrypt(data);
+			console.log(encryptedData);
+			system.exec("echo abc")
+				.then((out) => {
+					console.log(out);
+				})
+				.catch((err) => {
+					console.log("Err:" + err);
+				})
+
 		});
 	}
 });
