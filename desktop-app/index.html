@@ -4,16 +4,21 @@
 		<meta charset="utf-8">
 		<title>Wower</title>
 		<link rel="stylesheet" href="index.css">
+		<script>
+			window.jQuery = window.$ = require('jquery');
+		</script>
 	</head>
 	<body>
 		<div class="container">
 			<header>
 				<h1>Hey, it's Wower!</h1>
 				<h2>Let's wow your files. Choose a file:</h2>
-				<input type="file">
+				<input id="upload-input" type="file" name="uploads[]" multiple="multiple">
 			</header>
 			<section class="main"></section>
 			<footer></footer>
 		</div>
+
+		<script type="text/javascript" src="app.js"></script>
 	</body>
 </html>

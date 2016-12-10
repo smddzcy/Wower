@@ -1,6 +1,5 @@
 'use strict';
 const electron = require('electron');
-const logController = require('controllers/logController');
 const app = electron.app;
 
 // adds debug features like hotkeys for triggering dev tools and reload
