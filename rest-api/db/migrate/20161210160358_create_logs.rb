@@ -3,7 +3,7 @@ class CreateLogs < ActiveRecord::Migration[5.0]
     create_table :logs do |t|
       t.string :ip_address
       t.json :machine_info
-      t.time :time
+      t.string :time
       t.belongs_to :ufile
 
       t.timestamps

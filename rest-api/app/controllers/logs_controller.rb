@@ -17,7 +17,7 @@ class LogsController < ApplicationController
   def create
     @log = Log.new(ip_address: log_params[:ip_address],
                    machine_info: log_params[:machine_info],
-                   time: Time.now)
+                   time: Time.now.strftime("%d-%m-%Y %H:%I:%S"))
 
     if @log.save
       render json: @log, status: :created, location: @log
