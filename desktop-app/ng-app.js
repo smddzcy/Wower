@@ -7,16 +7,16 @@ const algorithm = 'aes-256-ctr';
 const key = '123';
 const Crypto = {
 	encrypt: (data) => {
-    const cipher = crypto.createCipher(algorithm, key)
-  	let crypted = cipher.update(data, 'utf8', 'hex')
-  	crypted += cipher.final('hex');
-  	return crypted;
+		const cipher = crypto.createCipher(algorithm, key)
+		let crypted = cipher.update(data, 'utf8', 'hex')
+		crypted += cipher.final('hex');
+		return crypted;
 	},
 	decrypt: (data) => {
-    const decipher = crypto.createDecipher(algorithm, key)
-  	let dec = decipher.update(data, 'hex', 'utf8')
-  	dec += decipher.final('utf8');
-  	return dec;
+		const decipher = crypto.createDecipher(algorithm, key)
+		let dec = decipher.update(data, 'hex', 'utf8')
+		dec += decipher.final('utf8');
+		return dec;
 	}
 };
 const exec = rq.remote('child_process').exec;
@@ -35,10 +35,10 @@ const system = {
 		return system.exec("ipconfig getifaddr en0");
 	},
 	getMachineInfo: () => {
-    let networkInterfaces = [];
-    for(let key in os.networkInterfaces()) {
-      networkInterfaces.push(os.networkInterfaces()[key][0].address);
-    }
+		let networkInterfaces = [];
+		for (let key in os.networkInterfaces()) {
+			networkInterfaces.push(os.networkInterfaces()[key][0].address);
+		}
 		return {
 			uname: `${os.type()} ${os.platform()} ${os.hostname()} ${os.release()} ${os.arch()}`,
 			hostname: os.hostname(),
@@ -202,16 +202,58 @@ app.controller('AuthController', ['$http', '$scope', '$rootScope', function($htt
 	$rootScope.loadTrustedIps = () => {
 		$http.get(`${env.API_URL}/trusted_ips`)
 			.then((resp) => {
-				$rootScope.ips = resp.data.trusted_ips.map((ipObj) => ipObj.ip);
+				$rootScope.ips = resp.data.trusted_ips;
 			}, (err) => {
 				console.log("error:" + JSON.stringify(err));
 			});
 	};
 
-  $rootScope.loadTrustedMachines();
-  $rootScope.loadTrustedIps();
+	$rootScope.removeTrustedIp = (id) => {
+		$http.delete(`${env.API_URL}/trusted_ips/${id}`)
+			.then((resp) => {
+				swal({
+					title: "Success!",
+					text: "IP address is successfully deleted from trusted list.",
+					type: "success"
+				});
 
-  this.trustThisIpAddress = () => {
+				$rootScope.loadTrustedIps();
+			})
+			.catch((err) => {
+				swal({
+					title: "Error!",
+					text: "Server returned an error.",
+					type: "error"
+				});
+				console.log(err);
+			});
+	};
+
+  $rootScope.removeTrustedMachine = (id) => {
+		$http.delete(`${env.API_URL}/trusted_machines/${id}`)
+			.then((resp) => {
+				swal({
+					title: "Success!",
+					text: "Machine is successfully deleted from trusted list.",
+					type: "success"
+				});
+
+				$rootScope.loadTrustedMachines();
+			})
+			.catch((err) => {
+				swal({
+					title: "Error!",
+					text: "Server returned an error.",
+					type: "error"
+				});
+				console.log(err);
+			});
+	};
+
+	$rootScope.loadTrustedMachines();
+	$rootScope.loadTrustedIps();
+
+	this.trustThisIpAddress = () => {
 		system.getIpAddress()
 			.then((ipAddress) => {
 				$http.post(`${env.API_URL}/trusted_ips/`, {
@@ -223,7 +265,7 @@ app.controller('AuthController', ['$http', '$scope', '$rootScope', function($htt
 						type: "success"
 					});
 
-          $rootScope.loadTrustedIps();
+					$rootScope.loadTrustedIps();
 				}, (err) => {
 					swal({
 						title: "Error!",
@@ -245,7 +287,7 @@ app.controller('AuthController', ['$http', '$scope', '$rootScope', function($htt
 				type: "success"
 			});
 
-      $rootScope.loadTrustedMachines();
+			$rootScope.loadTrustedMachines();
 		}, (err) => {
 			swal({
 				title: "Error!",

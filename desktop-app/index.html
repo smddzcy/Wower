@@ -154,7 +154,8 @@
 								<tbody>
 									<tr ng-repeat="machine in machines | orderBy: 'name'">
 										<td>{{machine.id}}</td>
-										<td>{{machine.checksum}}</td>
+										<td style="position:relative;">{{machine.checksum}}
+                      <i class="fa fa-times delete" ng-click="removeTrustedMachine(machine.id)"></i></td>
 									</tr>
 								</tbody>
 							</table>
@@ -170,8 +171,9 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-repeat="ip in ips">
-										<td>{{ip}}</td>
+									<tr ng-repeat="ipObj in ips">
+										<td style="position:relative;">{{ipObj.ip}}
+                      <i class="fa fa-times delete" ng-click="removeTrustedIp(ipObj.id)"></i></td>
 									</tr>
 								</tbody>
 							</table>

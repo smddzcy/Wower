@@ -43,6 +43,7 @@ class TrustedMachinesController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_trusted_machine
     @trusted_machine = TrustedMachine.find(params[:id])
+    @trusted_machine = TrustedMachine.find(params[:checksum]) if @trusted_machine.blank?
   end
 
   # Only allow a trusted parameter "white list" through.

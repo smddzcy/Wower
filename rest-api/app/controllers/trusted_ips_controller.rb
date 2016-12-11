@@ -42,6 +42,7 @@ class TrustedIpsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_trusted_ip
       @trusted_ip = TrustedIp.find(params[:id])
+      @trusted_ip = TrustedIp.find(params[:ip]) if @trusted_ip.blank?
     end
 
     # Only allow a trusted parameter "white list" through.
