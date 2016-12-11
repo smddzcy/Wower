@@ -5,23 +5,44 @@ const fs = require('fs');
 const app = angular.module('wowApp', []);
 
 app.controller('LogController', ['$http', '$rootScope', function($http, $rootScope) {
+	$rootScope.showModal = (log) => {
+    const jsonText = JSON.stringify(log.machine_info, undefined, 2).trim();
+		swal({
+			title: `Log#${log.id} Machine Info`,
+			text: jsonText.substring(1, jsonText.length - 2)
+		});
+	};
 	this.getLogs = () => {
+		if ($rootScope.gettingLogs) return;
+		$rootScope.gettingLogs = true;
 		$http.get(`${env.API_URL}/logs`)
 			.then((resp) => {
 				$rootScope.logs = resp.data.logs;
+				$rootScope.gettingLogs = false;
 				console.log(resp.data.logs);
 			});
 	};
+
+	if (!$rootScope.logs ||  $rootScope.logs.length === 0) {
+		this.getLogs();
+	}
 }]);
 
 app.controller('ListFileController', ['$http', '$rootScope', function($http, $rootScope) {
 	this.getFiles = () => {
+		if ($rootScope.gettingFiles) return;
+		$rootScope.gettingFiles = true;
 		$http.get(`${env.API_URL}/ufiles`)
 			.then((resp) => {
 				$rootScope.files = resp.data.ufiles;
+				$rootScope.gettingFiles = false;
 				console.log(resp.data.ufiles);
 			});
 	};
+
+	if (!$rootScope.files ||  $rootScope.files.length === 0) {
+		this.getFiles();
+	}
 }]);
 
 app.directive('fileModel', ['$parse', function($parse) {
@@ -95,9 +116,17 @@ app.controller('AuthController', ['$http', function($http) {
 				$http.post(`${env.API_URL}/trusted_ips/`, {
 					ip: ipAddress
 				}).then((resp) => {
-					console.log("Wow, successfully added your IP address.")
+					swal({
+						title: "Success!",
+						text: "Your IP address is successfully added to the trusted IP addresses.",
+						type: "success"
+					});
 				}, (err) => {
-					console.log("Couldn't add IP address, error message: " + err.message);
+					swal({
+						title: "Error!",
+						text: "Server returned an error: " + err.message,
+						type: "error"
+					});
 				});
 			});
 	};
@@ -106,9 +135,17 @@ app.controller('AuthController', ['$http', function($http) {
 		$http.post(`${env.API_URL}/trusted_machines/`, {
 			info: system.getMachineInfo()
 		}).then((resp) => {
-			console.log("Wow, successfully added your machine.")
+			swal({
+				title: "Success!",
+				text: "This machine is successfully added to the trusted machines.",
+				type: "success"
+			});
 		}, (err) => {
-			console.log("Couldn't add machine, error message: " + err.message);
+			swal({
+				title: "Error!",
+				text: "Server returned an error: " + err.message,
+				type: "error"
+			});
 		});
 	};
 }]);

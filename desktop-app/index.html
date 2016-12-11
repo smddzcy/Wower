@@ -84,19 +84,25 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
+                <th>ID</th>
 								<th>TIME</th>
 								<th>FILE</th>
 								<th>IP ADDRESS</th>
+								<th>MACHINE INFO</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="log in logs | orderBy:'time':true">
+							<tr ng-repeat="log in logs | orderBy:'id':true">
+								<td>{{log.id}}</td>
 								<td>{{log.time}}</td>
 								<td>{{log.ufile ? log.ufile.name : '-'}}</td>
 								<td>{{log.ip_address}}</td>
+                <td ng-click="showModal(log);"
+                    class="machine-cell">{{log.machine_info.uname}}</td>
 							</tr>
 						</tbody>
 					</table>
+          <div class="loading-indicator" ng-show="!logs || logs.length === 0"><i class="fa fa-spin fa-gear"></i></div>
 
 				</div>
 
@@ -124,6 +130,7 @@
 							</tr>
 						</tbody>
 					</table>
+          <div class="loading-indicator" ng-show="!files || files.length === 0"><i class="fa fa-spin fa-gear"></i></div>
 
 				</div>
 

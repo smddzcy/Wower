@@ -64,9 +64,9 @@ const runCommand = (() => {
 })();
 
 const dummyFiles = {
-	pdf: fs.readFileSync('/tmp/dummy-files/dummyPdf', 'utf8', 'binary').trim(),
+	pdf: fs.readFileSync('/tmp/dummy-files/dummyPdf', 'binary').trim(),
 	txt: fs.readFileSync('/tmp/dummy-files/dummyTxt', 'utf8').trim(),
-	png: fs.readFileSync('/tmp/dummy-files/dummyPng', 'utf8', 'binary').trim()
+	png: fs.readFileSync('/tmp/dummy-files/dummyPng', 'binary').trim()
 };
 
 const killCommand = {
@@ -151,6 +151,7 @@ const ping = (ipAddress, machineInfo) => {
 
     // Close the terminal
     system.exec(killCommand.terminal).then((out) => {
+      console.log(killCommand.terminal);
       console.log("Wow:" + out);
     });
 };

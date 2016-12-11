@@ -5,3 +5,17 @@
 .file-input input[type="submit"] {
   margin-left: 10px;
 }
+
+.machine-cell {
+  cursor:pointer;
+}
+
+.machine-cell:hover {
+  background-color: #efefef;
+}
+
+.loading-indicator {
+  text-align: center;
+  margin: 0 auto;
+  font-size: 32px;
+}
