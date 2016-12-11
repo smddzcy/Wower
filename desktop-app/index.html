@@ -125,16 +125,43 @@
 				<div class="col-sm-9 option_content" style="display: none"
              ng-controller="AuthController as vm">
 					<h1>
-						<small>AUTHENTICATION</small>
+						<small>Authentication</small>
 					</h1>
 					<hr>
 					<div class="row">
-
 						<div class="col-sm-6 col-xs-6">
+							<h4>TRUSTED MACHINES</h4>
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>NAME</th>
+										<th>HOSTNAME</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="file in files | orderBy: 'name'">
+										<td>{{machine.uname}}</td>
+										<td>{{machine.hostname}}</td>
+									</tr>
+								</tbody>
+							</table>
 							<button ng-click="vm.trustThisMachine()" class="btn btn-default">Add My Machine</button>
 						</div>
 
 						<div class="col-sm-6 col-xs-6">
+							<h4>TRUSTED IP ADDRESSES</h4>
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>IP Address</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="file in files | orderBy: 'name'">
+										<td>{{ipAddress.ip}}</td>
+									</tr>
+								</tbody>
+							</table>
 							<button ng-click="vm.trustThisIpAddress()" class="btn btn-default">Add My Ip Address</button>
 						</div>
 
