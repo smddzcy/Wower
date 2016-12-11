@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :trusted_machines
+  resources :trusted_ips
   resources :auths
   resources :ufiles
   resources :logs

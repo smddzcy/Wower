@@ -1,2 +1,0 @@
-class Auth < ApplicationRecord
-end

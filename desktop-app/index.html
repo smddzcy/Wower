@@ -6,11 +6,15 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="assets/css/bootstrap-min.css">
 		<link rel="stylesheet" href="assets/css/font-awesome-min.css">
+    <link rel="stylesheet" href="assets/css/sweetalert.css">
+		<link rel="stylesheet" href="assets/css/main.css">
 		<script type="text/javascript">
 			window.jQuery = window.$ = require('jquery');
 		</script>
 		<script src="assets/js/bootstrap-min.js"></script>
 		<script src="assets/js/angular-min.js"></script>
+		<script src="assets/js/bootstrap-filestyle-min.js"></script>
+		<script src="assets/js/sweetalert-min.js"></script>
 		<style>
 			/* Set height of the grid so .sidenav can be 100% (adjust if needed) */
 			.row.content {
@@ -53,22 +57,24 @@
 				<div class="col-sm-3 sidenav">
 					<h4>Wower</h4>
 					<ul class="nav nav-pills nav-stacked">
-						<li class="log active" onclick="show('log')">
-							<a href="#section1">Logs</a>
+						<li class="log active" onclick="show('log')" ng-controller="LogController as vm">
+							<a href="#section1" ng-click="vm.getLogs()">Logs</a>
 						</li>
-						<li class="file" onclick="show('file')">
-							<a href="#section2">Files</a>
+						<li class="file" onclick="show('file')" ng-controller="ListFileController as vm">
+							<a href="#section2" ng-click="vm.getFiles()">Files</a>
 						</li>
 						<li class="add" onclick="show('add')">
 							<a href="#section3">Add File</a>
+						</li>
+						<li class="option" onclick="show('option')">
+							<a href="#section1">Authentication</a>
 						</li>
 					</ul><br>
 				</div>
 
 				<div
 					class="col-sm-9 log_content"
-					style="display: inline"
-					ng-controller="LogController as vm">
+					style="display: inline">
 					<h1>
 						<small>LOGS</small>
 					</h1>
@@ -78,15 +84,13 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>ID</th>
 								<th>TIME</th>
 								<th>FILE</th>
 								<th>IP ADDRESS</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="log in vm.logs">
-								<td>{{log.id}}</td>
+							<tr ng-repeat="log in logs | orderBy:'time':true">
 								<td>{{log.time}}</td>
 								<td>{{log.ufile ? log.ufile.name : '-'}}</td>
 								<td>{{log.ip_address}}</td>
@@ -98,8 +102,7 @@
 
 				<div
 					class="col-sm-9 file_content"
-					style="display: none"
-					ng-controller="ListFileController as vm">
+					style="display: none">
 					<h1>
 						<small>FILES</small>
 					</h1>
@@ -108,15 +111,13 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-								<th>ID</th>
 								<th>NAME</th>
 								<th>PATH</th>
 								<th>LAST ACCESS</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="file in vm.files">
-								<td>{{file.id}}</td>
+							<tr ng-repeat="file in files | orderBy: 'name'">
 								<td>{{file.name}}</td>
 								<td>{{file.path}}</td>
 								<td>{{file.last_access_time ? file.last_access_time : '-'}}</td>
@@ -126,42 +127,73 @@
 
 				</div>
 
-				<div class="col-sm-9 add_content" style="display: none"
-             ng-controller="AddFileController as vm">
+				<div
+					class="col-sm-9 add_content"
+					style="display: none"
+					ng-controller="AddFileController as vm">
 					<h1>
 						<small>ADD FILE</small>
 					</h1>
 					<hr>
-					<label for="upload-input">File input</label>
-					<input id="upload-input" type="file" file-model="vm.file">
-          <input type="submit" class="btn btn-primary" ng-click="vm.submitFile()">
+					<div class="file-input">
+						<input id="upload-input" type="file" file-model="vm.file"
+                   class="filestyle"
+                   data-buttonBefore="true">
+						<input
+							type="submit"
+							class="btn btn-primary"
+							ng-click="vm.submitFile()">
+					</div>
 					<br>
 
+				</div>
+
+				<div class="col-sm-9 option_content" style="display: none"
+             ng-controller="AuthController as vm">
+					<h1>
+						<small>AUTHENTICATION</small>
+					</h1>
 					<hr>
+					<div class="row">
+
+						<div class="col-sm-6 col-xs-6">
+							<button ng-click="vm.trustThisMachine()" class="btn btn-default">Add My Machine</button>
+						</div>
+
+						<div class="col-sm-6 col-xs-6">
+							<button ng-click="vm.trustThisIpAddress()" class="btn btn-default">Add My Ip Address</button>
+						</div>
+
+					</div>
+
+					<br>
 				</div>
 
 			</div>
 		</div>
 
 		<footer class="container-fluid">
-			<p>Wower, built with <i class="fa fa-heart"></i> by Wow Team at Comodo Hackathon.</p>
+			<p>Wower, built with
+				<i class="fa fa-heart"></i>
+				by Wow Team at Comodo Hackathon.</p>
 		</footer>
 		<script type="text/javascript">
 			function reset() {
 				$(".log").removeClass("active");
 				$(".file").removeClass("active");
 				$(".add").removeClass("active");
+				$(".option").removeClass("active");
 
 				$(".log_content").css("display", "none");
 				$(".file_content").css("display", "none");
 				$(".add_content").css("display", "none");
+				$(".option_content").css("display", "none");
 
 			}
 			function show(s) {
 				reset();
 				$("." + s).addClass("active");
 				$("." + s + "_content").css("display", "inline");
-
 			}
 		</script>
 		<script type="text/javascript" src="ng-app.js"></script>

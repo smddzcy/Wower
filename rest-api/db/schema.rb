@@ -10,17 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161210175454) do
+ActiveRecord::Schema.define(version: 20161210233705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "auths", force: :cascade do |t|
-    t.json     "trusted_ips"
-    t.json     "trusted_machines"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-  end
 
   create_table "logs", force: :cascade do |t|
     t.string   "ip_address"
@@ -30,6 +23,19 @@ ActiveRecord::Schema.define(version: 20161210175454) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.index ["ufile_id"], name: "index_logs_on_ufile_id", using: :btree
+  end
+
+  create_table "trusted_ips", force: :cascade do |t|
+    t.string   "ip"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "trusted_machines", force: :cascade do |t|
+    t.text     "checksum"
+    t.json     "info"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "ufiles", force: :cascade do |t|

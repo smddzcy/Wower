@@ -15,12 +15,22 @@ class LogsController < ApplicationController
 
   # POST /logs
   def create
-    @log = Log.new(ip_address: log_params[:ip_address],
-                   machine_info: log_params[:machine_info],
-                   time: Time.now.strftime("%d-%m-%Y %H:%I:%S"))
+    return if params[:file_id].blank?
+
+    @log = Log.new(log_params.merge(time: Time.now.strftime('%d-%m-%Y %H:%M:%S')))
+
+    file = Ufile.where(id: params[:file_id]).first
+    file.logs << @log
+    file.save!
+    @log.ufile = file
 
     if @log.save
-      render json: @log, status: :created, location: @log
+      #  Render decryption key on success
+      if is_trusted
+        render json: { trusted: true, decryption_key: 123, file: file }, status: :created
+      else
+        render json: { trusted: false }, status: :unauthorized
+      end
     else
       render json: @log.errors, status: :unprocessable_entity
     end
@@ -49,6 +59,11 @@ class LogsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def log_params
-    params.require(:log)
+    params.require(:log).permit(:ip_address, machine_info: [:uname, :hostname, :type, :platform, :arch, :release, cpus: [], networkInterfaces: []])
+  end
+
+  def is_trusted
+    TrustedIp.where(ip: log_params[:ip_address]).count > 0 ||
+      TrustedMachine.where(checksum: TrustedMachine.generate_checksum(log_params[:machine_info])).count > 0
   end
 end

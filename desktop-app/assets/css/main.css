@@ -1,0 +1,7 @@
+.file-input {
+  display: flex;
+}
+
+.file-input input[type="submit"] {
+  margin-left: 10px;
+}
