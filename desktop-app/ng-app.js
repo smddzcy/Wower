@@ -6,7 +6,7 @@ const app = angular.module('wowApp', []);
 
 app.controller('LogController', ['$http', '$rootScope', function($http, $rootScope) {
 	$rootScope.showModal = (log) => {
-    const jsonText = JSON.stringify(log.machine_info, undefined, 2).trim();
+		const jsonText = JSON.stringify(log.machine_info, undefined, 2).trim();
 		swal({
 			title: `Log#${log.id} Machine Info`,
 			text: jsonText.substring(1, jsonText.length - 2)
@@ -43,6 +43,25 @@ app.controller('ListFileController', ['$http', '$rootScope', function($http, $ro
 	if (!$rootScope.files ||  $rootScope.files.length === 0) {
 		this.getFiles();
 	}
+
+  $rootScope.deleteFile = (fileId) => {
+		$http.delete(`${env.API_URL}/ufiles/${fileId}`)
+			.then((resp) => {
+				swal({
+					title: "Success!",
+					text: "Your file is successfully deleted. Note that it'll be deleted from all other machines too.",
+					type: "success"
+				});
+        this.getFiles();
+			})
+			.catch((err) => {
+				swal({
+					title: "Error!",
+					text: "Server returned an error: " + err.message,
+					type: "error"
+				});
+			});
+	};
 }]);
 
 app.directive('fileModel', ['$parse', function($parse) {

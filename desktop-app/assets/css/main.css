@@ -24,21 +24,6 @@ footer {
   position: absolute;
 }
 
-/* On small screens, set height to 'auto' for sidenav and grid */
-@media screen and (max-width: 767px) {
-  .sidenav {
-    height: auto;
-    padding: 15px;
-    margin: -15px;
-  }
-
-  .row.content {
-    height: auto;
-    padding: 15px;
-  }
-}
-
-
 .file-input {
   display: flex;
 }
@@ -65,4 +50,8 @@ td, th {
   max-width: 24vw;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+td * {
+  vertical-align: middle;
 }
