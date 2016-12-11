@@ -1,6 +1,7 @@
 'use strict';
 const electron = require('electron');
 const app = electron.app;
+require('electron-debug')({enabled: true, showDevTools: true});
 
 // adds debug features like hotkeys for triggering dev tools and reload
 require('electron-debug')();
@@ -16,8 +17,9 @@ function onClosed() {
 
 function createMainWindow() {
 	const win = new electron.BrowserWindow({
-		width: 800,
-		height: 600
+		width: 1000,
+		height: 800,
+    icon: __dirname + "wower-logo.icns"
 	});
 
 	win.loadURL(`file://${__dirname}/index.html`);

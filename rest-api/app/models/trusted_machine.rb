@@ -1,7 +1,7 @@
 class TrustedMachine < ApplicationRecord
-  validates :checksum, uniqueness: true
+  validates :checksum, presence: true, uniqueness: true
 
-  before_save :save_checksum
+  before_validation :save_checksum
 
   def save_checksum
     self.checksum = TrustedMachine.generate_checksum info

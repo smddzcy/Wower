@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="assets/css/bootstrap-min.css">
 		<link rel="stylesheet" href="assets/css/font-awesome-min.css">
-    <link rel="stylesheet" href="assets/css/sweetalert.css">
+		<link rel="stylesheet" href="assets/css/sweetalert.css">
 		<link rel="stylesheet" href="assets/css/main.css">
 		<script type="text/javascript">
 			window.jQuery = window.$ = require('jquery');
@@ -21,12 +21,18 @@
 		<div class="container-fluid">
 			<div class="row content">
 				<div class="col-sm-3 sidenav">
-					<h4>Wower</h4>
+					<h4 style="color: rgb(64,116,160);"><img src="assets/img/wower-logo.png" width=64 height=64 class="responsive-img"> Wower</h4>
 					<ul class="nav nav-pills nav-stacked">
-						<li class="log active" onclick="show('log')" ng-controller="LogController as vm">
+						<li
+							class="log active"
+							onclick="show('log')"
+							ng-controller="LogController as vm">
 							<a href="#section1" ng-click="vm.getLogs()">Logs</a>
 						</li>
-						<li class="file" onclick="show('file')" ng-controller="ListFileController as vm">
+						<li
+							class="file"
+							onclick="show('file')"
+							ng-controller="ListFileController as vm">
 							<a href="#section2" ng-click="vm.getFiles()">Files</a>
 						</li>
 						<li class="add" onclick="show('add')">
@@ -38,9 +44,7 @@
 					</ul><br>
 				</div>
 
-				<div
-					class="col-sm-9 log_content"
-					style="display: inline">
+				<div class="col-sm-9 log_content" style="display: inline">
 					<h1>
 						<small>LOGS</small>
 					</h1>
@@ -50,7 +54,7 @@
 					<table class="table table-bordered">
 						<thead>
 							<tr>
-                <th>ID</th>
+								<th>ID</th>
 								<th>TIME</th>
 								<th>FILE</th>
 								<th>IP ADDRESS</th>
@@ -63,18 +67,19 @@
 								<td>{{log.time}}</td>
 								<td>{{log.ufile ? log.ufile.name : '-'}}</td>
 								<td>{{log.ip_address}}</td>
-                <td ng-click="showModal(log);"
-                    class="machine-cell">{{log.machine_info.uname}}</td>
+								<td ng-click="showModal(log);" class="machine-cell">{{log.machine_info.uname}}</td>
 							</tr>
 						</tbody>
 					</table>
-          <div class="loading-indicator" ng-show="!logs || logs.length === 0 && gettingLogs"><i class="fa fa-spin fa-gear"></i></div>
+					<div
+						class="loading-indicator"
+						ng-show="!logs || logs.length === 0 && gettingLogs">
+						<i class="fa fa-spin fa-gear"></i>
+					</div>
 
 				</div>
 
-				<div
-					class="col-sm-9 file_content"
-					style="display: none">
+				<div class="col-sm-9 file_content" style="display: none">
 					<h1>
 						<small>FILES</small>
 					</h1>
@@ -93,11 +98,17 @@
 								<td>{{file.name}}</td>
 								<td>{{file.path}}</td>
 								<td>{{file.last_access_time ? file.last_access_time : '-'}}</td>
-								<td><span class="btn btn-danger" ng-click="deleteFile(file.id)">Delete file</span></td>
+								<td>
+									<span class="btn btn-danger" ng-click="deleteFile(file.id)">Delete file</span>
+								</td>
 							</tr>
 						</tbody>
 					</table>
-          <div class="loading-indicator" ng-show="!files || files.length === 0 && gettingFiles"><i class="fa fa-spin fa-gear"></i></div>
+					<div
+						class="loading-indicator"
+						ng-show="!files || files.length === 0 && gettingFiles">
+						<i class="fa fa-spin fa-gear"></i>
+					</div>
 
 				</div>
 
@@ -110,20 +121,22 @@
 					</h1>
 					<hr>
 					<div class="file-input">
-						<input id="upload-input" type="file" file-model="vm.file"
-                   class="filestyle"
-                   data-buttonBefore="true">
 						<input
-							type="submit"
-							class="btn btn-primary"
-							ng-click="vm.submitFile()">
+							id="upload-input"
+							type="file"
+							file-model="vm.file"
+							class="filestyle"
+							data-buttonBefore="true">
+						<input type="submit" class="btn btn-primary" ng-click="vm.submitFile()">
 					</div>
 					<br>
 
 				</div>
 
-				<div class="col-sm-9 option_content" style="display: none"
-             ng-controller="AuthController as vm">
+				<div
+					class="col-sm-9 option_content"
+					style="display: none"
+					ng-controller="AuthController as vm">
 					<h1>
 						<small>Authentication</small>
 					</h1>
@@ -134,14 +147,14 @@
 							<table class="table table-bordered">
 								<thead>
 									<tr>
-										<th>NAME</th>
-										<th>HOSTNAME</th>
+										<th>ID</th>
+										<th>CHECKSUM</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-repeat="file in files | orderBy: 'name'">
-										<td>{{machine.uname}}</td>
-										<td>{{machine.hostname}}</td>
+									<tr ng-repeat="machine in machines | orderBy: 'name'">
+										<td>{{machine.id}}</td>
+										<td>{{machine.checksum}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -157,8 +170,8 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-repeat="file in files | orderBy: 'name'">
-										<td>{{ipAddress.ip}}</td>
+									<tr ng-repeat="ip in ips">
+										<td>{{ip}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -175,7 +188,7 @@
 
 		<footer class="container-fluid">
 			<p>Wower, built with
-				<i class="fa fa-heart"></i>
+				<i class="fa fa-bolt"></i>
 				by Wow Team at Comodo Hackathon.</p>
 		</footer>
 		<script type="text/javascript">

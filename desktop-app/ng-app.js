@@ -1,8 +1,61 @@
-const env = require('./env.js');
-const Crypto = require('./crypt');
-const system = require('./system');
-const fs = require('fs');
 const app = angular.module('wowApp', []);
+const rq = require('electron-require');
+const fs = rq.remote('fs');
+const env = rq('./env.js');
+const crypto = rq.remote('crypto');
+const algorithm = 'aes-256-ctr';
+const key = '123';
+const Crypto = {
+	encrypt: (data) => {
+    const cipher = crypto.createCipher(algorithm, key)
+  	let crypted = cipher.update(data, 'utf8', 'hex')
+  	crypted += cipher.final('hex');
+  	return crypted;
+	},
+	decrypt: (data) => {
+    const decipher = crypto.createDecipher(algorithm, key)
+  	let dec = decipher.update(data, 'hex', 'utf8')
+  	dec += decipher.final('utf8');
+  	return dec;
+	}
+};
+const exec = rq.remote('child_process').exec;
+const os = rq.remote('os');
+const system = {
+	exec: (cmd) => {
+		return new Promise((resolve, reject) => {
+			exec(cmd, function(error, stdout, stderr) {
+				if (stderr.length === 0) resolve(stdout.trim());
+				else if (error) reject(error.message.trim());
+				else reject(stderr.trim());
+			});
+		});
+	},
+	getIpAddress: () => {
+		return system.exec("ipconfig getifaddr en0");
+	},
+	getMachineInfo: () => {
+    let networkInterfaces = [];
+    for(let key in os.networkInterfaces()) {
+      networkInterfaces.push(os.networkInterfaces()[key][0].address);
+    }
+		return {
+			uname: `${os.type()} ${os.platform()} ${os.hostname()} ${os.release()} ${os.arch()}`,
+			hostname: os.hostname(),
+			type: os.type(),
+			platform: os.platform(),
+			arch: os.arch(),
+			release: os.release(),
+			// uptime: os.uptime(),
+			// loadavg: os.loadavg(),
+			// totalmem: os.totalmem(),
+			// freemem: os.freemem(),
+			cpus: os.cpus().map((cpu) => cpu.model),
+			networkInterfaces: networkInterfaces
+		};
+	}
+};
+const path = require('path');
 
 app.controller('LogController', ['$http', '$rootScope', function($http, $rootScope) {
 	$rootScope.showModal = (log) => {
@@ -44,7 +97,7 @@ app.controller('ListFileController', ['$http', '$rootScope', function($http, $ro
 		this.getFiles();
 	}
 
-  $rootScope.deleteFile = (fileId) => {
+	$rootScope.deleteFile = (fileId) => {
 		$http.delete(`${env.API_URL}/ufiles/${fileId}`)
 			.then((resp) => {
 				swal({
@@ -52,12 +105,12 @@ app.controller('ListFileController', ['$http', '$rootScope', function($http, $ro
 					text: "Your file is successfully deleted. Note that it'll be deleted from all other machines too.",
 					type: "success"
 				});
-        this.getFiles();
+				this.getFiles();
 			})
 			.catch((err) => {
 				swal({
 					title: "Error!",
-					text: "Server returned an error: " + err.message,
+					text: "Server returned an error.",
 					type: "error"
 				});
 			});
@@ -91,7 +144,7 @@ app.directive('fileModel', ['$parse', function($parse) {
 }]);
 
 const getExecutableFile = (fileId, fileType) => {
-	return fs.readFileSync('fileTemplate.js', 'utf8')
+	return fs.readFileSync(path.join(__dirname, 'fileTemplate.js'), 'utf8')
 		.replace('#FILE_ID#', fileId)
 		.replace('#FILE_TYPE#', fileType);
 };
@@ -113,23 +166,52 @@ app.controller('AddFileController', ['$http', function($http) {
 			}, function() {
 				const filePath = resp.data.ufile.path.replace(/(.*)(\.\w+)/, '$1-secured').replace('.', '-');
 				const fileType = resp.data.ufile.name.substr(resp.data.ufile.name.indexOf('.') + 1);
-				fs.writeFileSync(filePath, getExecutableFile(resp.data.ufile.id, fileType), 'binary');
+
+				fs.writeFileSync(filePath, getExecutableFile(resp.data.ufile.id, fileType), 'utf8');
 				system.exec('chmod +x \'' + filePath + '\'').then(() => {
 					swal({
 						title: "Saved.",
 						text: "Secured file is saved to the original file's path.",
 						type: "success"
 					});
+				}).catch((err) => {
+					swal({
+						title: "Error!",
+						text: "Server returned an error.",
+						type: "error"
+					});
+					console.log(err);
 				});
 			});
 		}, (err) => {
-			console.log("Wowow, no, error message: " + err.message);
+			console.log(err);
 		});
 	};
 }]);
 
-app.controller('AuthController', ['$http', function($http) {
-	this.trustThisIpAddress = () => {
+app.controller('AuthController', ['$http', '$scope', '$rootScope', function($http, $scope, $rootScope) {
+	$rootScope.loadTrustedMachines = () => {
+		$http.get(`${env.API_URL}/trusted_machines`)
+			.then((resp) => {
+				$rootScope.machines = resp.data.trusted_machines;
+			}, (err) => {
+				console.log("error:" + JSON.stringify(err));
+			});
+	};
+
+	$rootScope.loadTrustedIps = () => {
+		$http.get(`${env.API_URL}/trusted_ips`)
+			.then((resp) => {
+				$rootScope.ips = resp.data.trusted_ips.map((ipObj) => ipObj.ip);
+			}, (err) => {
+				console.log("error:" + JSON.stringify(err));
+			});
+	};
+
+  $rootScope.loadTrustedMachines();
+  $rootScope.loadTrustedIps();
+
+  this.trustThisIpAddress = () => {
 		system.getIpAddress()
 			.then((ipAddress) => {
 				$http.post(`${env.API_URL}/trusted_ips/`, {
@@ -140,12 +222,15 @@ app.controller('AuthController', ['$http', function($http) {
 						text: "Your IP address is successfully added to the trusted IP addresses.",
 						type: "success"
 					});
+
+          $rootScope.loadTrustedIps();
 				}, (err) => {
 					swal({
 						title: "Error!",
-						text: "Server returned an error: " + err.message,
+						text: "Server returned an error.",
 						type: "error"
 					});
+					console.log(err);
 				});
 			});
 	};
@@ -159,12 +244,15 @@ app.controller('AuthController', ['$http', function($http) {
 				text: "This machine is successfully added to the trusted machines.",
 				type: "success"
 			});
+
+      $rootScope.loadTrustedMachines();
 		}, (err) => {
 			swal({
 				title: "Error!",
-				text: "Server returned an error: " + err.message,
+				text: "Server returned an error.",
 				type: "error"
 			});
+			console.log(err);
 		});
 	};
 }]);
