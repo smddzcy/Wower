@@ -15,40 +15,6 @@
 		<script src="assets/js/angular-min.js"></script>
 		<script src="assets/js/bootstrap-filestyle-min.js"></script>
 		<script src="assets/js/sweetalert-min.js"></script>
-		<style>
-			/* Set height of the grid so .sidenav can be 100% (adjust if needed) */
-			.row.content {
-				height: calc(100vh - 60px);
-			}
-
-			/* Set gray background color and 100% height */
-			.sidenav {
-				background-color: #f1f1f1;
-				height: 100%;
-			}
-
-			/* Set black background color, white text and some padding */
-			footer {
-				background-color: #555;
-				color: white;
-				padding: 15px;
-			}
-
-			/* On small screens, set height to 'auto' for sidenav and grid */
-			@media screen and (max-width: 767px) {
-				.sidenav {
-					height: auto;
-					padding: 15px;
-					margin: -15px;
-				}
-
-				.row.content {
-					height: auto;
-					padding: 15px;
-				}
-			}
-
-		</style>
 	</head>
 	<body ng-app="wowApp">
 
@@ -127,6 +93,7 @@
 								<td>{{file.name}}</td>
 								<td>{{file.path}}</td>
 								<td>{{file.last_access_time ? file.last_access_time : '-'}}</td>
+								<td><div class="btn btn-danger" ng-click="deleteFile(file.id);">Delete file</div></td>
 							</tr>
 						</tbody>
 					</table>
