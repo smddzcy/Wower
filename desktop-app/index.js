@@ -1,10 +1,7 @@
 'use strict';
 const electron = require('electron');
 const app = electron.app;
-require('electron-debug')({enabled: true, showDevTools: true});
-
-// adds debug features like hotkeys for triggering dev tools and reload
-require('electron-debug')();
+// require('electron-debug')({enabled: true, showDevTools: true});
 
 // prevent window being garbage collected
 let mainWindow;

