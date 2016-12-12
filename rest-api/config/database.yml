@@ -9,3 +9,13 @@ development:
   database: comodo_hackathon
   pool: 5
   timeout: 5000
+
+production:
+  <<: *default
+  host: localhost
+  adapter: postgresql
+  encoding: utf8
+  database: appname_production2
+  pool: 5
+  username: <%= ENV['APPNAME_DATABASE_USER'] %>
+  password: <%= ENV['APPNAME_DATABASE_PASSWORD'] %>
